@@ -7,7 +7,7 @@
 INSTALLDIR=/usr/share/gopreload
 
 #Maximum filesize to preload
-MAXMB="15"
+MAXMB="50"
 #Excluded extension list
 EXCLUDE_LIST='\.avi\|\.vob\|\.mpg\|\.mkv\|\.mp3\|\.ogg\|\.flac\|\.bmp\|\.mov'
 EXCLUDE_PATTERN_FILE=$INSTALLDIR/prepare_exclude.txt
