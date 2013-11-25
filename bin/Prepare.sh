@@ -69,8 +69,10 @@ cat /tmp/_LiNkS_.$EUID.txt|sort|uniq > /tmp/openlibs2.$EUID.txt
 
 TOTAL=`cat /tmp/openlibs2.$EUID.txt | wc -l`
 
-rm $INSTALLDIR/enabled/$1.$EUID.openfiles-*MB.txt 2>/dev/null
-rm $INSTALLDIR/disabled/$1.$EUID.openfiles.txt 2>/dev/null
+BASEFILENAME=$(basename $1)
+
+rm $INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles-*MB.txt 2>/dev/null
+rm $INSTALLDIR/disabled/$BASEFILENAME.$EUID.openfiles.txt 2>/dev/null
 TOTSIZE=0
 COUNTER=0
 for i in $(cat /tmp/openlibs2.$EUID.txt); do
@@ -79,7 +81,7 @@ for i in $(cat /tmp/openlibs2.$EUID.txt); do
 		SIZE=0`ls -1sd /$i 2>/dev/null| cut -d "/" -f 1|grep [0-9]|cut -d " " -f 1`
 
 		if [ $SIZE -lt $MAXKB ]; then
-        	        file "$i"|grep -v directory |cut -f 1 -d ":" >>$INSTALLDIR/enabled/$1.$EUID.openfiles.txt
+        	        file "$i"|grep -v directory |cut -f 1 -d ":" >>$INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles.txt
 			TOTSIZE=`expr $TOTSIZE + $SIZE`
 		else
 			echo
@@ -91,6 +93,6 @@ done
 rm /tmp/openlibs2.$EUID.txt /tmp/out.$EUID.gopreload /tmp/_LiNkS_.$EUID.txt 2>/dev/null
 
 echo " "
-mv $INSTALLDIR/enabled/$1.$EUID.openfiles.txt $INSTALLDIR/enabled/$1.$EUID.openfiles-`expr $TOTSIZE / 1024`MB.txt
-echo "$INSTALLDIR/enabled/$1.$EUID.openfiles-`expr $TOTSIZE / 1024`MB.txt compiled."
+mv $INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles.txt $INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles-`expr $TOTSIZE / 1024`MB.txt
+echo "$INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles-`expr $TOTSIZE / 1024`MB.txt compiled."
 
