@@ -22,13 +22,13 @@ Installation:
 		/usr/share/gopreload/bin/StartPreload.sh
 	  to customize them yto your needs.
 	* systemd users:
-        put the .service file into /usr/lib/systemd/system/
-        systemctl daemon-reload
-        systemctl enable gopreload
+		put the .service file into /usr/lib/systemd/system/
+		systemctl daemon-reload
+		systemctl enable gopreload
 	* To give regular users the ability to choose new programs
 	  to preload, give them write access to:
-        /usr/share/gopreload/enabled and
-        /usr/share/gopreload/disabled
+		/usr/share/gopreload/enabled and
+		/usr/share/gopreload/disabled
 		
 Usage and example:
 	First of all, you must think on a few applications which you REALLY
@@ -119,11 +119,11 @@ Suggestions:
 
 Some Benchmarks; Start Application Times
 
-	Program     |WithPreload |WithoutPreload
-                |            |
-	oowriter    |0m3.502s    |0m11.768s
-	thunderbird |0m3.704s    |0m12.675s
-	firefox     |0m5.038s    |0m16.160s
-	winecfg     |0m2.559s    |0m5.032s
-	kwrite      |0m1.166s    |0m3.045s
+Program		|WithPreload	|WithoutPreload
+			|				|
+oowriter	|0m3.502s		|0m11.768s
+thunderbird	|0m3.704s		|0m12.675s
+firefox		|0m5.038s		|0m16.160s
+winecfg		|0m2.559s		|0m5.032s
+kwrite		|0m1.166s		|0m3.045s
 	
