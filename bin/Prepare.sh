@@ -56,7 +56,7 @@ read
 kill $PIDOFSTRACE 2>/dev/null >/dev/null
 
 echo "Detection completed, parsing file list..."
-grep "/" /tmp/out.$EUID.gopreload | grep -vi -f $EXCLUDE_PATTERN_FILE | cut -f 2 -d '"' | sort| uniq >/tmp/openlibs2.$EUID.txt
+grep '("/' /tmp/out.$EUID.gopreload | grep -vi -f $EXCLUDE_PATTERN_FILE | cut -f 2 -d '"' | sort| uniq >/tmp/openlibs2.$EUID.txt
 
 #Remove symbolic links...
 echo "Done with parsing, backtracing symbolic links..."
