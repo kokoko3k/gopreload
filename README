@@ -16,23 +16,33 @@ Requirements:
 	dirname
 
 Installation:
-	Simply put GOPreload directory somewhere on your HD, but don't
-	forget it :-p
-
+	* Put everything under /usr/share/gopreload/
+	* You may want to edit the first lines in:
+		/usr/share/gopreload/bin/Prepare.sh and
+		/usr/share/gopreload/bin/StartPreload.sh
+	  to customize them yto your needs.
+	* systemd users:
+        put the .service file into /usr/lib/systemd/system/
+        systemctl daemon-reload
+        systemctl enable gopreload
+	* To give regular users the ability to choose new programs
+	  to preload, give them write access to:
+        /usr/share/gopreload/enabled and
+        /usr/share/gopreload/disabled
+		
 Usage and example:
 	First of all, you must think on a few applications which you REALLY
 	need to be very responsive on starting.
-	For my everyday use i think to firefox
+	Take firefox as an example:
 
 	--
 	I will use then 'Prepare.sh' that way:
-	cd GOPreload
-	./Prepare.sh firefox
+	/usr/share/gopreload/bin/Prepare.sh firefox
 	(wait for Firefox to fully load and press ENTER in the shell)
 
-	Now Prepare.sh has created a new file called firefox.openfiles.txt
-	in the enabled/ folder.
-	Thegenerated filename includes an estimation of the MB wich will stay
+	Now Prepare.sh has created a new file called firefox.YourUID.openfiles.txt
+	in the /usr/share/gopreload/enabled/ folder.
+	The generated filename includes an estimation of the MB wich will stay
 	residents in ram.
 	It contains the list of files which firefox needs to start-up, the
 	idea is to keep them in ram so that next time firefox will start,
@@ -48,10 +58,13 @@ Usage and example:
 	--
 	
 	--
-	Now that you 'prepared' your programs,you need to use'StartPreload.sh',
-	and you need root privileges.
-	cd GOPreload
-	sudo ./StartPreload.sh
+	Non systemd users:
+		Now that you 'prepared' your programs,you need to use'StartPreload.sh',
+		and you need root privileges.
+		sudo /usr/share/gopreload/bin/StartPreload.sh
+	systemd users:
+		systemctl start gopreload
+
 	Just sit and wait for StartPreload.sh to preload the file lists 
 	you created with Prepare.sh, next time (and forever) you will launch 
 	the programs, you choose, you will notice a nice speed boost, 
@@ -62,10 +75,10 @@ Usage and example:
 	--
 
 	You may have noticed that there are two folders under GOPreload:
-	* GOPreload/enabled/ meaning should now be clear
-	* GOPreload/disabled/ is empty, you can use it to move filelists 
-	'on the fly' from enabled/ to disabled/ folder, StartPreload.sh
-	will notice the changes and will react accordingly.
+	* /usr/share/gopreload/enabled/ meaning should now be clear
+	* /usr/share/gopreload/disabled/ is empty, you can use it to move filelists 
+	'on the fly' from enabled/ to disabled/ folder.
+	StartPreload.sh will notice the changes and will react accordingly.
 
 
 Configuration Variables:
@@ -93,7 +106,8 @@ Suggestions:
 	 (i use it to load about 150MB of files), i suggest you to launch it
 	 with nice and ionice at boot time in your rc scripts using something
 	 like that:
-	 nice -n 19 ionice -c3 sh -c 'path/GOPreload/StartPreload.sh'
+	 nice -n 19 ionice -c3 sh -c '/usr/share/goPreload/StartPreload.sh'
+	 (this is done automagically by the systemd service)
 
 	*Please note that even if you have, say, prepared konqueror which takes
 	 20MB of ram and kwrite which takes 14, it is more likely that
@@ -106,7 +120,7 @@ Suggestions:
 Some Benchmarks; Start Application Times
 
 	Program     |WithPreload |WithoutPreload
-                    |            |
+                |            |
 	oowriter    |0m3.502s    |0m11.768s
 	thunderbird |0m3.704s    |0m12.675s
 	firefox     |0m5.038s    |0m16.160s
