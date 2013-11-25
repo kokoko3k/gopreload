@@ -1,0 +1,115 @@
+GOPreload Readme
+
+
+Description:
+	Got tired of the way the kernel decides what to keep cached and what
+	not, expecially after watching a DVD or copying large files,  
+	i decided to write two simple scripts which keep the applications
+	i use most in the system cache by mmapping and mlocking them in memory.
+
+
+Requirements:
+	mapandlock (precompiled i686 and amd64, as well as sourcecode included)
+	strace
+	readlink
+	basename
+	dirname
+
+Installation:
+	Simply put GOPreload directory somewhere on your HD, but don't
+	forget it :-p
+
+Usage and example:
+	First of all, you must think on a few applications which you REALLY
+	need to be very responsive on starting.
+	For my everyday use i think to firefox
+
+	--
+	I will use then 'Prepare.sh' that way:
+	cd GOPreload
+	./Prepare.sh firefox
+	(wait for Firefox to fully load and press ENTER in the shell)
+
+	Now Prepare.sh has created a new file called firefox.openfiles.txt
+	in the enabled/ folder.
+	Thegenerated filename includes an estimation of the MB wich will stay
+	residents in ram.
+	It contains the list of files which firefox needs to start-up, the
+	idea is to keep them in ram so that next time firefox will start,
+	it will not read them from disk and will start-up much, much faster.
+
+	You can reiterate Prepare.sh as much as you like, think at konqueror,
+	nautilus, kwrite, gedit and so on, but don't do too much, because
+	your memory is limited.
+
+	***NOTICE:***
+	As soon as you update firefox or it's needed libraries, you will
+	need to (re)Prepare it again!
+	--
+	
+	--
+	Now that you 'prepared' your programs,you need to use'StartPreload.sh',
+	and you need root privileges.
+	cd GOPreload
+	sudo ./StartPreload.sh
+	Just sit and wait for StartPreload.sh to preload the file lists 
+	you created with Prepare.sh, next time (and forever) you will launch 
+	the programs, you choose, you will notice a nice speed boost, 
+	even if you're short of memory.
+	StartPreload.sh can be launched with debug parameter:
+	./StartPreload.sh debug
+	...to see some interesting things.
+	--
+
+	You may have noticed that there are two folders under GOPreload:
+	* GOPreload/enabled/ meaning should now be clear
+	* GOPreload/disabled/ is empty, you can use it to move filelists 
+	'on the fly' from enabled/ to disabled/ folder, StartPreload.sh
+	will notice the changes and will react accordingly.
+
+
+Configuration Variables:
+	Prepare.sh:
+	* MAXMB is the Maximum filesize (in MB) to preload at 'prepare' stage.
+	  files bigger than MAXMB will NOT be included in the list.
+	  Small files tend to slow down things more than big ones,
+	  big files will use a lot of ram, so i suggest you to keep
+	  it to a value not greater than 15MB.
+	* EXCLUDE_LIST contains a list of file extension you wan't preload.
+	  Maybe you would like to exclude avi, mp3 and so on...
+	  Please, refer to Prepare.sh to learn the syntax.
+	 
+	StartPreload.sh
+	* MAXMB is the Maximum filesize (in MB) to preload at 'preload' stage.
+	  files bigger than MAXMB will NOT be preloaded, even if they are
+	  in the list created by Prepare.sh, set it to "-1" to disable the
+	  feature.
+	* LONG_DELAY is the time (in seconds) to check if enabled/ disabled/
+	  content has changed, don't set it too low or leave as default.
+
+
+Suggestions:
+	*As StartPreload.sh could be very heavy the first time it starts
+	 (i use it to load about 150MB of files), i suggest you to launch it
+	 with nice and ionice at boot time in your rc scripts using something
+	 like that:
+	 nice -n 19 ionice -c3 sh -c 'path/GOPreload/StartPreload.sh'
+
+	*Please note that even if you have, say, prepared konqueror which takes
+	 20MB of ram and kwrite which takes 14, it is more likely that
+	 if they are preloaded togheter, they will share a lot of (kde)libs,
+	 so you can expect them togheter to keep only a little more of 20MB.
+
+	*Please note that programs which you prepare can't be swapped 
+	 to swapfile.
+
+Some Benchmarks; Start Application Times
+
+	Program     |WithPreload |WithoutPreload
+                    |            |
+	oowriter    |0m3.502s    |0m11.768s
+	thunderbird |0m3.704s    |0m12.675s
+	firefox     |0m5.038s    |0m16.160s
+	winecfg     |0m2.559s    |0m5.032s
+	kwrite      |0m1.166s    |0m3.045s
+	

@@ -1,0 +1,26 @@
+\.avi
+\.vob
+\.mpg
+\.mkv
+\.mp3
+\.ogg
+\.flac
+\.bmp
+\.mov
+boot
+/proc/
+/sys/
+\\
+/dev/
+O_RDWR
+O_WRONLY
+o such
+unfinished
+\./
+/etc/passwd
+/etc/group
+xauth
+/etc/
+.Trash
+.directory
+SIGIO'

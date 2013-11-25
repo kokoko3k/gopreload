@@ -1,0 +1,15 @@
+[Unit]
+Description=gopreload: Preloads files needed for given programs.
+
+[Service]
+Type=simple
+OOMScoreAdjust=1000
+IOSchedulingClass=3
+CPUSchedulingPolicy=batch
+
+ExecStart=/usr/share/gopreload/bin/StartPreload.sh
+
+     
+[Install]
+WantedBy=multi-user.target
+
