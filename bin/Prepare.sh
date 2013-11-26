@@ -28,7 +28,10 @@ if [ ! -d "$INSTALLDIR/enabled" ] ; then
 fi
 
 if [ ! -w "$INSTALLDIR/enabled" ] ; then
-  echo ; echo "You need write permissions to $INSTALLDIR/enabled" ; echo
+  echo ; echo "You have not write permissions to $INSTALLDIR/enabled,"
+  echo "because gopreload defaults that way for regular users."
+  echo "Please, manually change the permissions on $INSTALLDIR/enabled"
+  echo "to make it writable by you." ; echo
   exit 1
 fi
 
@@ -39,7 +42,10 @@ if [ ! -d "$INSTALLDIR/disabled" ] ; then
 fi
 
 if [ ! -w "$INSTALLDIR/disabled" ] ; then
-  echo ; echo "You need write permissions to $INSTALLDIR/disabled" ; echo
+  echo ; echo "You have not write permissions to $INSTALLDIR/disabled,"
+  echo "because gopreload defaults that way for regular users."
+  echo "Please, manually change the permissions on $INSTALLDIR/disabled"
+  echo "to make it writable by you." ; echo
   exit 1
 fi
 
