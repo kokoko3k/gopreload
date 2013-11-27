@@ -69,8 +69,7 @@ echo "Done with parsing, backtracing symbolic links..."
 for file in $(cat /tmp/openlibs2.$EUID.txt); do
 	readlink -m $file >>/tmp/_LiNkS_.$EUID.txt
 done
-cat /tmp/_LiNkS_.$EUID.txt|sort|uniq > /tmp/openlibs2.$EUID.txt
-
+sort -u /tmp/_LiNkS_.$EUID.txt > /tmp/openlibs2.$EUID.txt
 
 
 TOTAL=`cat /tmp/openlibs2.$EUID.txt | wc -l`
