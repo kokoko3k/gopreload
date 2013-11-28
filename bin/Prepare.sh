@@ -4,12 +4,8 @@
 # * by Antonio Orefice
 # * Released under the GNU General Public License (GPL) version 2.
 
-INSTALLDIR=/usr/share/gopreload
+source /etc/gopreload.conf
 
-#Maximum filesize to preload
-MAXMB="50"
-#Excluded extension list
-EXCLUDE_LIST='\.avi\|\.vob\|\.mpg\|\.mkv\|\.mp3\|\.ogg\|\.flac\|\.bmp\|\.mov'
 EXCLUDE_PATTERN_FILE=$INSTALLDIR/prepare_exclude.txt
 
 

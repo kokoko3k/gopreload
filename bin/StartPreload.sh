@@ -4,23 +4,10 @@
 # * Programmed by Antonio Orefice
 # * Released under the GNU General Public License (GPL) version 2.
 
-INSTALLDIR="/usr/share/gopreload"
-
+source /etc/gopreload.conf
 
 export IFS=$'\n'
 ARCH=`uname -m`
-
-#LONG_DELAY:
-#Seconds to wait between 2 cycles.
-#Don't set this to a value lower than the time needed to load all the files!
-	LONG_DELAY="300"
-
-#MAX_MB:
-#Maximum filesize to preload,.
-#MAXMB="-1" will skip check and speedup things,
-#don't use MAXMB="2.5", use 2 or 3
-        MAXMB="-1"
-
 
 
 function CheckList
@@ -62,21 +49,6 @@ do
 	TOTSIZE=0
 	SIZE=0
 	COUNT=0
-
-	if [ $MAXMB != "-1" ]; then
-		for i in $(cat /tmp/preloadlist.txt); do
-			SIZE=0`ls -1sd /$i 2>/dev/null| cut -d "/" -f 1|grep [0-9]|cut -d " " -f 1`
-	                if [ 0$SIZE -lt $MAXKB ]; then
-        	                echo $i >>/tmp/preloadlist_maxmb.txt
-	                else
-        	                if [ "$1" = "debug" ]; then
-					echo "** Excluding $i because it's too large: $SIZE KB > $MAXKB KB based on user prefs."
-				fi
-			fi
-		done
-	mv /tmp/preloadlist_maxmb.txt /tmp/preloadlist.txt 2>/dev/null >/dev/null
-	SIZE=0
-	fi
 
 	echo "/tmp/preloadlist.txt" > /tmp/listpreload.txt
 	LISTAFILE=`cat /tmp/preloadlist.txt`
