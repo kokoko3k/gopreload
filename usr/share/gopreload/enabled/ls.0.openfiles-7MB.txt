@@ -1,5 +1,0 @@
-/usr/lib/libacl.so.1.1.0
-/usr/lib/libattr.so.1.1.0
-/usr/lib/libc-2.18.so
-/usr/lib/libcap.so.2.22
-/usr/lib/locale/locale-archive
