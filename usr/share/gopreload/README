@@ -9,20 +9,17 @@ Description:
 
 
 Requirements:
-	mapandlock (precompiled i686 and amd64, as well as sourcecode included)
+	mapandlock (sourcecode included)
 	strace
 	readlink
 	basename
 	dirname
 
 Installation:
-	* Put everything under /usr/share/gopreload/
-	* You may want to edit the first lines in:
-		/usr/share/gopreload/bin/Prepare.sh and
-		/usr/share/gopreload/bin/StartPreload.sh
-	  to customize them yto your needs.
+	* Put everything under /
+	* You may want to edit /etc/gopreload.conf
+	  to customize gopreload to your needs.
 	* systemd users:
-		put the .service file into /usr/lib/systemd/system/
 		systemctl daemon-reload
 		systemctl enable gopreload
 	* To give regular users the ability to choose new programs
