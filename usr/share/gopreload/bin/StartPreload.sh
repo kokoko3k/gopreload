@@ -78,7 +78,7 @@ do
 		sleep $LONG_DELAY
 	fi
   else
-	echo "Nothing changed, Sleeping $LONG_DELAY sec."
+	#echo "Nothing changed, Sleeping $LONG_DELAY sec."
 	sleep $LONG_DELAY
   fi
 
