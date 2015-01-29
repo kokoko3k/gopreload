@@ -80,6 +80,7 @@ do
   else
 	#echo "Nothing changed, Sleeping $LONG_DELAY sec."
 	sleep $LONG_DELAY
+	killall -HUP mapandlock.$ARCH >/dev/null 2>/dev/null
   fi
 
 done
