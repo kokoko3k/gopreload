@@ -62,7 +62,7 @@ do
 			 TOTSIZE=`expr $TOTSIZE + $SIZE`
 			 COUNT=`expr $COUNT + 1`
 		done
-		killall -HUP mapandlock.$ARCH >/dev/null 2>/dev/null
+		killall mapandlock.$ARCH >/dev/null 2>/dev/null
 		$INSTALLDIR/bin/mapandlock.$ARCH /tmp/listpreload.txt &
 		echo "3/4 - Starting preload cycle at `date` for `expr  $TOTSIZE / 1024` MB in $COUNT files used by:"
 		ls $INSTALLDIR/enabled/
@@ -80,7 +80,8 @@ do
   else
 	#echo "Nothing changed, Sleeping $LONG_DELAY sec."
 	sleep $LONG_DELAY
-	killall -HUP mapandlock.$ARCH >/dev/null 2>/dev/null
+	killall mapandlock.$ARCH >/dev/null 2>/dev/null
+	$INSTALLDIR/bin/mapandlock.$ARCH /tmp/listpreload.txt &
   fi
 
 done
