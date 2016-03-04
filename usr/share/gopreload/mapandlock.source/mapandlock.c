@@ -1,7 +1,7 @@
 #include "include.h"
 
 void
-mmapFile(char fileToMap[128])
+mmapFile(char fileToMap[512])
 {
 	void		*src;
 	struct	stat	statbuf;
@@ -51,11 +51,11 @@ munmapFile(FILE *fileUnMap)
 }
 
 void
-cacheList(char line[128])
+cacheList(char line[512])
 {
 	struct	stat	buf;
 	FILE		*file;
-	char		linea[128];
+	char		linea[512];
 
 	if (lstat(line, &buf) <0 )
 	{
@@ -91,8 +91,8 @@ int
 main(int argc, char *argv[])
 {
 	struct	stat	buf;
-	char		line[128];
-	char		buffer[128];
+	char		line[512];
+	char		buffer[512];
 	FILE		*fileLIST;
 
 	if (argc != 2)
