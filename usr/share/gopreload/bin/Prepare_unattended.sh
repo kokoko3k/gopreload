@@ -5,7 +5,6 @@
 # * Released under the GNU General Public License (GPL) version 2.
 
 source /etc/gopreload.conf
-TIMEOUT=10 #fixme move this into /etc/gopreload.conf
 EXCLUDE_PATTERN_FILE=$INSTALLDIR/prepare_exclude.txt
 
 
@@ -50,7 +49,7 @@ echo "Detecting opened files..."
 
 rm /tmp/openlibs2.$EUID.txt /tmp/_LiNkS_.$EUID.txt 2>/dev/null
 
-timeout -k 1 $TIMEOUT strace -f -F -e trace=open,openat,access $* 2>/tmp/out.$EUID.gopreload &
+timeout -k 1 $TIMEOUT_UNATTENDED strace -f -F -e trace=open,openat,access $* 2>/tmp/out.$EUID.gopreload &
 PIDOFSTRACE=$!
 
 #Wait for program to exit:
