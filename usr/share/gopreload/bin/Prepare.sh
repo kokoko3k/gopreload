@@ -50,7 +50,7 @@ echo "Detecting opened files..."
 
 rm /tmp/openlibs2.$EUID.txt /tmp/_LiNkS_.$EUID.txt 2>/dev/null
 
-strace -f -F -e trace=open,access $* 2>/tmp/out.$EUID.gopreload &
+strace -f -F -e trace=open,openat,access $* 2>/tmp/out.$EUID.gopreload &
 PIDOFSTRACE=$!
 
 echo "Press [ENTER] when you've done"
@@ -58,7 +58,8 @@ read
 kill $PIDOFSTRACE 2>/dev/null >/dev/null
 
 echo "Detection completed, parsing file list..."
-grep '("/' /tmp/out.$EUID.gopreload | grep -vi -f $EXCLUDE_PATTERN_FILE | grep -vi $EXCLUDE_LIST | cut -f 2 -d '"' | sort -u >/tmp/openlibs2.$EUID.txt
+#grep '("/' /tmp/out.$EUID.gopreload | grep -vi -f $EXCLUDE_PATTERN_FILE | grep -vi $EXCLUDE_LIST | cut -f 2 -d '"' | sort -u >/tmp/openlibs2.$EUID.txt
+grep \" /tmp/out.$EUID.gopreload |cut -d '"' -f 2 | grep -vi -f $EXCLUDE_PATTERN_FILE | grep -vi $EXCLUDE_LIST | sort -u >/tmp/openlibs2.$EUID.txt
 
 #Remove symbolic links...
 echo "Done with parsing, backtracing symbolic links..."
