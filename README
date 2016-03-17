@@ -119,11 +119,11 @@ Suggestions:
 
 Some Benchmarks; Start Application Times
 
-Program		|WithPreload	|WithoutPreload
-			|				|
-oowriter	|0m3.502s		|0m11.768s
-thunderbird	|0m3.704s		|0m12.675s
-firefox		|0m5.038s		|0m16.160s
-winecfg		|0m2.559s		|0m5.032s
-kwrite		|0m1.166s		|0m3.045s
+Program     |WithPreload    |WithoutPreload
+            |               |
+oowriter    |0m3.502s       |0m11.768s
+thunderbird |0m3.704s       |0m12.675s
+firefox     |0m5.038s       |0m16.160s
+winecfg     |0m2.559s       |0m5.032s
+kwrite      |0m1.166s       |0m3.045s
 	
