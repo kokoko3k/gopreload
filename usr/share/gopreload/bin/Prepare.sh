@@ -96,4 +96,4 @@ rm /tmp/openlibs2.$EUID.txt /tmp/out.$EUID.gopreload /tmp/_LiNkS_.$EUID.txt 2>/d
 echo " "
 mv $INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles.txt $INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles-`expr $TOTSIZE / 1024`MB.txt
 echo "$INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles-`expr $TOTSIZE / 1024`MB.txt compiled."
-
+echo $@ > $INSTALLDIR/enabled/$BASEFILENAME.$EUID.cmd
