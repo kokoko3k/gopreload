@@ -6,8 +6,12 @@
 
 IFS=$'\n'
 
-source /etc/gopreload.conf
+echo 
+echo "Please stand-by (don't open any window!)"
+echo "Go make a coffe."
+echo
 
+source /etc/gopreload.conf
 FILELISTS="$INSTALLDIR/enabled/*.$EUID.openfiles-*.txt"
 
 for PROG in $(head -q -n 1 $FILELISTS|cut -d "=" -f 2-) ; do
