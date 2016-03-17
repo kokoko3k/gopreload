@@ -49,13 +49,15 @@ echo "Detecting opened files..."
 
 rm /tmp/openlibs2.$EUID.txt /tmp/_LiNkS_.$EUID.txt 2>/dev/null
 
+#do not accept little timeouts:
+[ "0$TIMEOUT_UNATTENDED" -gt 10 ] || TIMEOUT_UNATTENDED=10
+
 timeout -k 1 $TIMEOUT_UNATTENDED strace -f -F -e trace=open,openat,access $* 2>/tmp/out.$EUID.gopreload &
 PIDOFSTRACE=$!
 
 #Wait for program to exit:
 NUMWIN=$(wmctrl -l|wc -l)
 while true ; do
-echo whiling
     sleep 0.5
     NUMWIN2=$(wmctrl -l|wc -l)
     [ "$NUMWIN2" -gt "$NUMWIN" ] && break #exit as soon as a new window as been created
