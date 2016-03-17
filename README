@@ -52,6 +52,9 @@ Usage and example:
 	***NOTICE:***
 	As soon as you update firefox or it's needed libraries, you will
 	need to (re)Prepare it again!
+	To re-prepare your programs in an automatic/batch way, 
+	(eg: after system upgrades), you can use:
+	/usr/share/gopreload/bin/batch_refresh.sh
 	--
 	
 	--
