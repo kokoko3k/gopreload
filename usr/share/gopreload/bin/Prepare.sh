@@ -77,12 +77,14 @@ rm $INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles-*MB.txt 2>/dev/null
 rm $INSTALLDIR/disabled/$BASEFILENAME.$EUID.openfiles.txt 2>/dev/null
 TOTSIZE=0
 COUNTER=0
+OUTFILE=$INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles.txt
+echo "cmd=$@" > $OUTFILE
 for i in $(cat /tmp/openlibs2.$EUID.txt); do
         	COUNTER=`expr $COUNTER + 1`
                 echo -ne "\r$COUNTER on $TOTAL done, will use `expr $TOTSIZE / 1024`MB to preload them"
 		SIZE=0`ls -1sd /$i 2>/dev/null| cut -d "/" -f 1|grep [0-9]|cut -d " " -f 1`
 		if [ $SIZE -lt $MAXKB ]; then
-        	        file "$i"|grep -v directory |cut -f 1 -d ":" >>$INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles.txt
+        	        file "$i"|grep -v directory |cut -f 1 -d ":" >> $OUTFILE
 			TOTSIZE=`expr $TOTSIZE + $SIZE`
 		else
 			echo
@@ -96,4 +98,4 @@ rm /tmp/openlibs2.$EUID.txt /tmp/out.$EUID.gopreload /tmp/_LiNkS_.$EUID.txt 2>/d
 echo " "
 mv $INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles.txt $INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles-`expr $TOTSIZE / 1024`MB.txt
 echo "$INSTALLDIR/enabled/$BASEFILENAME.$EUID.openfiles-`expr $TOTSIZE / 1024`MB.txt compiled."
-echo $@ > $INSTALLDIR/enabled/$BASEFILENAME.$EUID.cmd
+

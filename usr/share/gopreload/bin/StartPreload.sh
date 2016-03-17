@@ -44,7 +44,7 @@ do
   ls -la $INSTALLDIR/enabled/ > /tmp/enabled.txt
   if ! diff /tmp/enabled.prec.txt /tmp/enabled.txt &>/dev/null;
   then
-	cat $INSTALLDIR/enabled/*.openfiles-*MB.txt*|sort|uniq >/tmp/preloadlist.txt
+	tail -n+2 $INSTALLDIR/enabled/*.openfiles-*MB.txt*|sort|uniq >/tmp/preloadlist.txt
 
 	TOTSIZE=0
 	SIZE=0
