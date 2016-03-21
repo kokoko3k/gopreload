@@ -118,7 +118,9 @@ int main(int argc, char *argv[])
 		}
 
 		if( locked_memory + st.st_size > mlock_limit.rlim_cur ) {
-			fprintf(stderr,
+			//under systemd it seems to be able to lock the pages depsite this error message
+			//so comment the error.
+			/*fprintf(stderr,
 				"error: exceeded the memlock resource limit for this process.\n"
 				"Required limit to mlock '%s': %llu (counting already mlocked files)\n"
 				"Locked memory resource limit set to: %llu\n"
@@ -127,7 +129,7 @@ int main(int argc, char *argv[])
 				(unsigned long long)locked_memory + st.st_size,
 				(unsigned long long)mlock_limit.rlim_cur );
 			close(fd);
-			break;
+            break;*/
 		}
 
 		ptr = mmap(
