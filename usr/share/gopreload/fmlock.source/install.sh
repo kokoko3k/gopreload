@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cp fmlock ../bin/
+cp fmlock.gopreload ../bin/
