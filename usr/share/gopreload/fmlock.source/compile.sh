@@ -1,3 +1,3 @@
 #!/bin/bash
-gcc ./fmlock.c -o fmlock
-strip -s fmlock
+gcc ./fmlock.c -o fmlock.gopreload
+strip -s fmlock.gopreload
