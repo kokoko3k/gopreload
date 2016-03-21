@@ -1,2 +1,2 @@
 #!/bin/bash
-killall StartPreload.sh mapandlock.`uname -a`
+killall StartPreload.sh fmlock.gopreload

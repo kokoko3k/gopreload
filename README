@@ -9,7 +9,7 @@ Description:
 
 
 Requirements:
-	mapandlock (sourcecode included)
+	fmlock (sourcecode included thanks to datenwolf)
 	strace
 	readlink
 	basename
