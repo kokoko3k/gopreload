@@ -43,173 +43,187 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 static int heat_the_cache(int fd)
 {
-	char buf[1024];
-	int rv;
-	do {
-	retry_read:
-		rv = read(fd, buf, sizeof(buf));
-		if( -1 == rv
-		 && EINTR == errno ) {
-			goto retry_read;
-		}
-	} while( 0 < rv );
+    char buf[1024];
+    int rv;
+    do {
+    retry_read:
+        rv = read(fd, buf, sizeof(buf));
+        if( -1 == rv
+         && EINTR == errno ) {
+            goto retry_read;
+        }
+    } while( 0 < rv );
 
-	return rv != 0;
+    return rv != 0;
 }
 
 int main(int argc, char *argv[])
 {
-	unsigned long long locked_memory;
-	int i, fd_null;
-	fd_set phony_fdset;
-	struct rlimit mlock_limit;
+    unsigned long long locked_memory;
+    int i, fd_null;
+    fd_set phony_fdset;
+    struct rlimit mlock_limit;
 
-	if( 2 > argc ) {
-		fprintf(stderr,
-			"Usage:\n\n"
-			"%s [filenames]\n\n"
-			"Once its deed is done kill the process by sending a terminating signal.\n"
-			"SIGINT (Ctrl+C) on the controlling terminal should do the trick.\n",
-			argv[0] );
-		return 1;
-	}
+    if( 2 > argc ) {
+        fprintf(stderr,
+            "Usage:\n\n"
+            "%s [filename list]\n\n"
+            "Once its deed is done kill the process by sending a terminating signal.\n"
+            "SIGINT (Ctrl+C) on the controlling terminal should do the trick.\n",
+            argv[0] );
+        return 1;
+    }
 
-	if( -1 == getrlimit(RLIMIT_MEMLOCK, &mlock_limit) ) {
-		fprintf(stderr,
-			"error getrlimit(RLIMIT_MEMLOCK): %s\n",
-			strerror(errno) );
-		return 1;
-	}
-	fprintf(stderr,
-		"memlock rlimit: %llu\n",
-		(unsigned long long)mlock_limit.rlim_cur );
+    if( -1 == getrlimit(RLIMIT_MEMLOCK, &mlock_limit) ) {
+        fprintf(stderr,
+            "error getrlimit(RLIMIT_MEMLOCK): %s\n",
+            strerror(errno) );
+        return 1;
+    }
+    fprintf(stderr,
+        "memlock rlimit: %llu\n",
+        (unsigned long long)mlock_limit.rlim_cur );
 
-	locked_memory = 0;
-	for(i = 1; i < argc; ++i) {
-		char const * const filename = argv[i];
-		int fd;
-		struct stat st;
-		void *ptr;
+    locked_memory = 0;
+    
+    //Open file list:
+      char const * const list_name = argv[1];
+      FILE *list_fdp = fopen(list_name, "r");
+      char filename[1024];
+      
+      while(fgets(filename,sizeof filename ,list_fdp)) //iterate through lines
+      {
+filename[strcspn(filename, "\r\n")] = 0; // works for LF, CR, CRLF, LFCR, ...
+                                                int fd;
+                                                struct stat st;
+                                                void *ptr;
 
-		fprintf(stderr,
-			"mlocking '%s'... ", filename);
+                                                fprintf(stderr,
+                                                    "mlocking '%s'... ", filename);
 
-	retry_open:
-		fd = open(filename, O_RDONLY);
-		if( -1 == fd ) {
-			if( EINTR == errno ) {
-				goto retry_open;
-			} else
-			{
-				fprintf(stderr,
-					"error open('%s'): %s\n",
-					filename,
-					strerror(errno) );
-				continue;
-			}
-		}
+                                            retry_open:
+                                                fd = open(filename, O_RDONLY);
+                                                if( -1 == fd ) {
+                                                    if( EINTR == errno ) {
+                                                        goto retry_open;
+                                                    } else
+                                                    {
+                                                        //fprintf(stderr,"è luno: %n \n",sizeof(filename));
+                                                        fprintf(stderr,
+                                                            "error while opening: %s %s\n",
+                                                            filename,
+                                                            strerror(errno) );
+                                                        
+                                                        continue;
+                                                    }
+                                                }
 
-		if( -1 == fstat(fd, &st) ) {
-			fprintf(stderr,
-				"error fstat(fd['%s']): %s\n",
-				filename,
-				strerror(errno) );
-			goto finish_file;
-		}
+                                                if( -1 == fstat(fd, &st) ) {
+                                                    fprintf(stderr,
+                                                        "error fstat(fd['%s']): %s\n",
+                                                        filename,
+                                                        strerror(errno) );
+                                                    goto finish_file;
+                                                }
 
-		if( locked_memory + st.st_size > mlock_limit.rlim_cur ) {
-			//under systemd it seems to be able to lock the pages depsite this error message
-			//so comment the error.
-			/*fprintf(stderr,
-				"error: exceeded the memlock resource limit for this process.\n"
-				"Required limit to mlock '%s': %llu (counting already mlocked files)\n"
-				"Locked memory resource limit set to: %llu\n"
-				"Increase the locked memory resource limit and try again.\n",
-				filename,
-				(unsigned long long)locked_memory + st.st_size,
-				(unsigned long long)mlock_limit.rlim_cur );
-			close(fd);
-            break;*/
-		}
+                                                if( locked_memory + st.st_size > mlock_limit.rlim_cur ) {
+                                                    //under systemd it seems to be able to lock the pages depsite this error message
+                                                    //so comment the error.
+                                                    /*fprintf(stderr,
+                                                        "error: exceeded the memlock resource limit for this process.\n"
+                                                        "Required limit to mlock '%s': %llu (counting already mlocked files)\n"
+                                                        "Locked memory resource limit set to: %llu\n"
+                                                        "Increase the locked memory resource limit and try again.\n",
+                                                        filename,
+                                                        (unsigned long long)locked_memory + st.st_size,
+                                                        (unsigned long long)mlock_limit.rlim_cur );
+                                                    close(fd);
+                                                    break;*/
+                                                }
 
-		ptr = mmap(
-			NULL,
-			st.st_size,
-			PROT_READ,
-			MAP_SHARED | MAP_LOCKED,
-			fd,
-			0 );
-		if( MAP_FAILED == ptr ) {
-			fprintf(stderr,
-				"error mmap(fd['%s'], 0..%lld): %s\n",
-				filename,
-				(long long)st.st_size,
-				strerror(errno) );
-			goto finish_file;
-		}
+                                                ptr = mmap(
+                                                    NULL,
+                                                    st.st_size,
+                                                    PROT_READ,
+                                                    MAP_SHARED | MAP_LOCKED,
+                                                    fd,
+                                                    0 );
+                                                if( MAP_FAILED == ptr ) {
+                                                    fprintf(stderr,
+                                                        "error mmap(fd['%s'], 0..%lld): %s\n",
+                                                        filename,
+                                                        (long long)st.st_size,
+                                                        strerror(errno) );
+                                                    goto finish_file;
+                                                }
 
-		if( -1 == mlock(ptr, st.st_size) ) {
-			fprintf(stderr,
-				"error mlock(ptr[fd['%s']]=%p): %s\n",
-				filename,
-				ptr,
-				strerror(errno) );
-			goto finish_file;
-		}
+                                                if( -1 == mlock(ptr, st.st_size) ) {
+                                                    fprintf(stderr,
+                                                        "error mlock(ptr[fd['%s']]=%p): %s\n",
+                                                        filename,
+                                                        ptr,
+                                                        strerror(errno) );
+                                                    goto finish_file;
+                                                }
 
-		if( locked_memory + st.st_size < locked_memory ) {
-			/* overflow */
-			locked_memory = -1;
-		} else
-		{
-			locked_memory += st.st_size;
-		}
+                                                if( locked_memory + st.st_size < locked_memory ) {
+                                                    /* overflow */
+                                                    locked_memory = -1;
+                                                } else
+                                                {
+                                                    locked_memory += st.st_size;
+                                                }
 
-		heat_the_cache(fd);
+                                                heat_the_cache(fd);
 
-	finish_file:
-		close(fd);
-		fputs("done\n", stderr);
-	}
+                                            finish_file:
+                                                close(fd);
+                                                fputs("done\n", stderr);
+                                            }
 
-	if( !locked_memory ) {
-		fprintf(stderr,
-			"nothing locked, exiting.\n");
-		return 1;
-	}
+                                            
+                                            
+                                            
+        
+    
+    
+    if( !locked_memory ) {
+        fprintf(stderr,
+            "nothing locked, exiting.\n");
+        return 1;
+    }
 
-	fprintf(stderr,
-		"Files locked and cache heated up. pid=%lld. Going to sleep, .zZ...\n",
-		(long long)getpid() );
+    fprintf(stderr,
+        "Files locked and cache heated up. pid=%lld. Going to sleep, .zZ...\n",
+        (long long)getpid() );
 
-	/* At this point the program shall sleep until a terminating
-	 * signal arrives. To do so a nice side effect of the definition
-	 * of /dev/null behavior is used: read on a /dev/null fd always
-	 * return 0, which correspond to EOF which is a "no content
-	 * available for read (yet)" situation for which select waits.
-	 * So by selecting for a read a fd on /dev/null we can put the
-	 * process to sleep. */
-	fd_null = open("/dev/null", O_RDONLY);
-	if( -1 == fd_null ) {
-		fprintf(stderr,
-			"error open('/dev/null'): %s\n",
-			strerror(errno) );
-		return 1;
-	}
-	FD_ZERO(&phony_fdset);
-	FD_SET(fd_null, &phony_fdset);
-	if( -1 == select(fd_null, &phony_fdset, NULL, NULL, NULL) ) {
-		fprintf(stderr,
-			"error select(...): %s\n",
-			strerror(errno) );
-		return 1;
-	}
+    /* At this point the program shall sleep until a terminating
+     * signal arrives. To do so a nice side effect of the definition
+     * of /dev/null behavior is used: read on a /dev/null fd always
+     * return 0, which correspond to EOF which is a "no content
+     * available for read (yet)" situation for which select waits.
+     * So by selecting for a read a fd on /dev/null we can put the
+     * process to sleep. */
+    fd_null = open("/dev/null", O_RDONLY);
+    if( -1 == fd_null ) {
+        fprintf(stderr,
+            "error open('/dev/null'): %s\n",
+            strerror(errno) );
+        return 1;
+    }
+    FD_ZERO(&phony_fdset);
+    FD_SET(fd_null, &phony_fdset);
+    if( -1 == select(fd_null, &phony_fdset, NULL, NULL, NULL) ) {
+        fprintf(stderr,
+            "error select(...): %s\n",
+            strerror(errno) );
+        return 1;
+    }
 
-	return 0;
+    return 0;
 }
 
 /* == Crazy Credits ==
  * Music listend to while writing this program:
  *     Carbon Based Lifeforms - Twentythree
  */
-

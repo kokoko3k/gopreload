@@ -63,7 +63,7 @@ do
 			 COUNT=`expr $COUNT + 1`
 		done
 		killall fmlock.gopreload >/dev/null 2>/dev/null
-		$INSTALLDIR/bin/fmlock.gopreload $(cat /tmp/preloadlist.txt) &
+		$INSTALLDIR/bin/fmlock.gopreload /tmp/preloadlist.txt &
 		echo "3/4 - Starting preload cycle at `date` for `expr  $TOTSIZE / 1024` MB in $COUNT files used by:"
 		ls $INSTALLDIR/enabled/
 		echo
