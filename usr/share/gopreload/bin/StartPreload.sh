@@ -72,7 +72,7 @@ do
 	else
 		echo "2/4 - Computing total MB... skipped"
 		killall -HUP fmlock.gopreload >/dev/null 2>/dev/null
-		$INSTALLDIR/bin/fmlock.gopreload $(cat /tmp/preloadlist.txt) 2>/dev/null >/dev/null &
+		$INSTALLDIR/bin/fmlock.gopreload /tmp/preloadlist.txt 2>/dev/null >/dev/null &
 		echo "3/4 - Starting preload cycle at `date`"
 		echo "4/4 - Sleeping $LONG_DELAY sec."
 		sleep $LONG_DELAY
