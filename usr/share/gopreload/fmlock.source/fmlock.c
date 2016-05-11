@@ -186,13 +186,13 @@ filename[strcspn(filename, "\r\n")] = 0; // works for LF, CR, CRLF, LFCR, ...
                                             
         
     
-    
+  /*  
     if( !locked_memory ) {
         fprintf(stderr,
             "nothing locked, exiting.\n");
         return 1;
     }
-
+*/
     fprintf(stderr,
         "Files locked and cache heated up. pid=%lld. Going to sleep, .zZ...\n",
         (long long)getpid() );
