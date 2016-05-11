@@ -81,7 +81,7 @@ do
 	#echo "Nothing changed, Sleeping $LONG_DELAY sec."
 	sleep $LONG_DELAY
 	killall fmlock.gopreload >/dev/null 2>/dev/null
-	$INSTALLDIR/bin/fmlock.gopreload $(cat /tmp/preloadlist.txt) &
+	$INSTALLDIR/bin/fmlock.gopreload /tmp/preloadlist.txt 2>/dev/null >/dev/null &
   fi
 
 done
