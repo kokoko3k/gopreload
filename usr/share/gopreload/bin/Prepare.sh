@@ -53,7 +53,7 @@ rm /tmp/openlibs2.$EUID.txt /tmp/_LiNkS_.$EUID.txt 2>/dev/null
 strace -f -F -e trace=open,openat,access $* 2>/tmp/out.$EUID.gopreload &
 PIDOFSTRACE=$!
 
-echo "Press [ENTER] when you've done"
+echo "Press [ENTER] when you're done"
 read
 kill $PIDOFSTRACE 2>/dev/null >/dev/null
 
