@@ -62,7 +62,6 @@ do
 			 TOTSIZE=`expr $TOTSIZE + $SIZE`
 			 COUNT=`expr $COUNT + 1`
 		done
-		killall fmlock.gopreload >/dev/null 2>/dev/null
 		$INSTALLDIR/bin/fmlock.gopreload /tmp/preloadlist.txt &
 		echo "3/4 - Starting preload cycle at `date` for `expr  $TOTSIZE / 1024` MB in $COUNT files used by:"
 		ls $INSTALLDIR/enabled/
@@ -71,7 +70,7 @@ do
 		sleep $LONG_DELAY
 	else
 		echo "2/4 - Computing total MB... skipped"
-		killall -HUP fmlock.gopreload >/dev/null 2>/dev/null
+		for p in `pidof fmlock.gopreload` ; do kill $pid &>/dev/null ; done
 		$INSTALLDIR/bin/fmlock.gopreload /tmp/preloadlist.txt 2>/dev/null >/dev/null &
 		echo "3/4 - Starting preload cycle at `date`"
 		echo "4/4 - Sleeping $LONG_DELAY sec."
@@ -80,6 +79,7 @@ do
   else
 	#echo "Nothing changed, Sleeping $LONG_DELAY sec."
 	sleep $LONG_DELAY
+	for p in `pidof fmlock.gopreload` ; do kill $pid &>/dev/null ; done
 	killall fmlock.gopreload >/dev/null 2>/dev/null
 	$INSTALLDIR/bin/fmlock.gopreload /tmp/preloadlist.txt 2>/dev/null >/dev/null &
   fi
