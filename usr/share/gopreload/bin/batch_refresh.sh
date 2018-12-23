@@ -8,7 +8,7 @@ IFS=$'\n'
 
 echo 
 echo "Please stand-by (don't open any window!)"
-echo "Go make a coffe."
+echo "Go make a coffee."
 echo
 
 source /etc/gopreload.conf
