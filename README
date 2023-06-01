@@ -3,9 +3,9 @@ GOPreload Readme
 
 Description:
 	Got tired of the way the kernel decides what to keep cached and what
-	not, expecially after watching a DVD or copying large files,  
-	i decided to write two simple scripts which keep the applications
-	i use most in the system cache by mmapping and mlocking them in memory.
+	not, expecially after watching a DVD or copying large files,
+	I decided to write two simple scripts which keep the applications
+	I use most in the system cache by mmapping and mlocking them in memory.
 
 
 Requirements:
@@ -40,26 +40,26 @@ Usage and example:
 	Now Prepare.sh has created a new file called firefox.YourUID.openfiles.txt
 	in the /usr/share/gopreload/enabled/ folder.
 	The generated filename includes an estimation of the MB wich will stay
-	residents in ram.
+	resident in ram.
 	It contains the list of files which firefox needs to start-up, the
 	idea is to keep them in ram so that next time firefox will start,
 	it will not read them from disk and will start-up much, much faster.
 
-	You can reiterate Prepare.sh as much as you like, think at konqueror,
+	You can reiterate Prepare.sh as much as you like, think of konqueror,
 	nautilus, kwrite, gedit and so on, but don't do too much, because
 	your memory is limited.
 
 	***NOTICE:***
-	As soon as you update firefox or it's needed libraries, you will
+	As soon as you update firefox or its needed libraries, you will
 	need to (re)Prepare it again!
-	To re-prepare your programs in an automatic/batch way, 
+	To re-prepare your programs in an automatic/batch way,
 	(eg: after system upgrades), you can use:
 	/usr/share/gopreload/bin/batch_refresh.sh
 	--
 	
 	--
 	Non systemd users:
-		Now that you 'prepared' your programs,you need to use'StartPreload.sh',
+		Now that you 'prepared' your programs, you need to use 'StartPreload.sh',
 		and you need root privileges.
 		sudo /usr/share/gopreload/bin/StartPreload.sh
 	systemd users:
@@ -67,7 +67,7 @@ Usage and example:
 
 	Just sit and wait for StartPreload.sh to preload the file lists 
 	you created with Prepare.sh, next time (and forever) you will launch 
-	the programs, you choose, you will notice a nice speed boost, 
+	the programs you choose, you will notice a nice speed boost,
 	even if you're short of memory.
 	StartPreload.sh can be launched with debug parameter:
 	./StartPreload.sh debug
@@ -76,7 +76,7 @@ Usage and example:
 
 	You may have noticed that there are two folders under GOPreload:
 	* /usr/share/gopreload/enabled/ meaning should now be clear
-	* /usr/share/gopreload/disabled/ is empty, you can use it to move filelists 
+	* /usr/share/gopreload/disabled/ is empty, you can use it to move filelists
 	'on the fly' from enabled/ to disabled/ folder.
 	StartPreload.sh will notice the changes and will react accordingly.
 
@@ -86,15 +86,15 @@ Configuration Variables:
 	* MAXMB is the Maximum filesize (in MB) to preload at 'prepare' stage.
 	  files bigger than MAXMB will NOT be included in the list.
 	  Small files tend to slow down things more than big ones,
-	  big files will use a lot of ram, so i suggest you to keep
+	  big files will use a lot of ram, so I suggest you to keep
 	  it to a value not greater than 15MB.
-	* EXCLUDE_LIST contains a list of file extension you wan't preload.
+	* EXCLUDE_LIST contains a list of file extension you won't preload.
 	  Maybe you would like to exclude avi, mp3 and so on...
 	  Please, refer to Prepare.sh to learn the syntax.
-	 
+	
 	StartPreload.sh
-	* MAXMB is the Maximum filesize (in MB) to preload at 'preload' stage.
-	  files bigger than MAXMB will NOT be preloaded, even if they are
+	* MAXMB is the maximum filesize (in MB) to preload at 'preload' stage.
+	  Files bigger than MAXMB will NOT be preloaded, even if they are
 	  in the list created by Prepare.sh, set it to "-1" to disable the
 	  feature.
 	* LONG_DELAY is the time (in seconds) to check if enabled/ disabled/
@@ -102,20 +102,20 @@ Configuration Variables:
 
 
 Suggestions:
-	*As StartPreload.sh could be very heavy the first time it starts
-	 (i use it to load about 150MB of files), i suggest you to launch it
-	 with nice and ionice at boot time in your rc scripts using something
-	 like that:
-	 nice -n 19 ionice -c3 sh -c '/usr/share/goPreload/StartPreload.sh'
-	 (this is done automagically by the systemd service)
+	* As StartPreload.sh could be very heavy the first time it starts
+	  (I use it to load about 150MB of files), I suggest you to launch it
+	  with nice and ionice at boot time in your rc scripts using something
+	  like that:
+	  nice -n 19 ionice -c3 sh -c '/usr/share/goPreload/StartPreload.sh'
+	  (this is done automagically by the systemd service)
 
-	*Please note that even if you have, say, prepared konqueror which takes
-	 20MB of ram and kwrite which takes 14, it is more likely that
-	 if they are preloaded togheter, they will share a lot of (kde)libs,
-	 so you can expect them togheter to keep only a little more of 20MB.
+	* Please note that even if you have, say, prepared konqueror which takes
+	  20MB of ram and kwrite which takes 14, it is more likely that
+	  if they are preloaded together, they will share a lot of (kde)libs,
+	  so you can expect them together to keep only a little more of 20MB.
 
-	*Please note that programs which you prepare can't be swapped 
-	 to swapfile.
+	* Please note that programs which you prepare can't be swapped
+	  to swapfile.
 
 Some Benchmarks; Start Application Times
 
@@ -126,4 +126,4 @@ thunderbird |0m3.704s       |0m12.675s
 firefox     |0m5.038s       |0m16.160s
 winecfg     |0m2.559s       |0m5.032s
 kwrite      |0m1.166s       |0m3.045s
-	
+
