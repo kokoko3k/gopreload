@@ -3,7 +3,7 @@ GOPreload Readme
 
 Description:
 	Got tired of the way the kernel decides what to keep cached and what
-	not, expecially after watching a DVD or copying large files,
+	not, especially after watching a DVD or copying large files,
 	I decided to write two simple scripts which keep the applications
 	I use most in the system cache by mmapping and mlocking them in memory.
 
