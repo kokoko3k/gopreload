@@ -48,8 +48,7 @@ static int heat_the_cache(int fd)
     do {
     retry_read:
         rv = read(fd, buf, sizeof(buf));
-        if( -1 == rv
-         && EINTR == errno ) {
+        if( -1 == rv && EINTR == errno ) {
             goto retry_read;
         }
     } while( 0 < rv );
@@ -87,112 +86,106 @@ int main(int argc, char *argv[])
     locked_memory = 0;
     
     //Open file list:
-      char const * const list_name = argv[1];
-      FILE *list_fdp = fopen(list_name, "r");
-      char filename[1024];
-      
-      while(fgets(filename,sizeof filename ,list_fdp)) //iterate through lines
-      {
-filename[strcspn(filename, "\r\n")] = 0; // works for LF, CR, CRLF, LFCR, ...
-                                                int fd;
-                                                struct stat st;
-                                                void *ptr;
-
-                                                fprintf(stderr,
-                                                    "mlocking '%s'... ", filename);
-
-                                            retry_open:
-                                                fd = open(filename, O_RDONLY);
-                                                if( -1 == fd ) {
-                                                    if( EINTR == errno ) {
-                                                        goto retry_open;
-                                                    } else
-                                                    {
-                                                        //fprintf(stderr,"è luno: %n \n",sizeof(filename));
-                                                        fprintf(stderr,
-                                                            "error while opening: %s %s\n",
-                                                            filename,
-                                                            strerror(errno) );
-                                                        
-                                                        continue;
-                                                    }
-                                                }
-
-                                                if( -1 == fstat(fd, &st) ) {
-                                                    fprintf(stderr,
-                                                        "error fstat(fd['%s']): %s\n",
-                                                        filename,
-                                                        strerror(errno) );
-                                                    goto finish_file;
-                                                }
-
-                                                if( locked_memory + st.st_size > mlock_limit.rlim_cur ) {
-                                                    //under systemd it seems to be able to lock the pages depsite this error message
-                                                    //so comment the error.
-                                                    /*fprintf(stderr,
-                                                        "error: exceeded the memlock resource limit for this process.\n"
-                                                        "Required limit to mlock '%s': %llu (counting already mlocked files)\n"
-                                                        "Locked memory resource limit set to: %llu\n"
-                                                        "Increase the locked memory resource limit and try again.\n",
-                                                        filename,
-                                                        (unsigned long long)locked_memory + st.st_size,
-                                                        (unsigned long long)mlock_limit.rlim_cur );
-                                                    close(fd);
-                                                    break;*/
-                                                }
-
-                                                ptr = mmap(
-                                                    NULL,
-                                                    st.st_size,
-                                                    PROT_READ,
-                                                    MAP_SHARED | MAP_LOCKED,
-                                                    fd,
-                                                    0 );
-                                                if( MAP_FAILED == ptr ) {
-                                                    fprintf(stderr,
-                                                        "error mmap(fd['%s'], 0..%lld): %s\n",
-                                                        filename,
-                                                        (long long)st.st_size,
-                                                        strerror(errno) );
-                                                    goto finish_file;
-                                                }
-
-                                                if( -1 == mlock(ptr, st.st_size) ) {
-                                                    fprintf(stderr,
-                                                        "error mlock(ptr[fd['%s']]=%p): %s\n",
-                                                        filename,
-                                                        ptr,
-                                                        strerror(errno) );
-                                                    goto finish_file;
-                                                }
-
-                                                if( locked_memory + st.st_size < locked_memory ) {
-                                                    /* overflow */
-                                                    locked_memory = -1;
-                                                } else
-                                                {
-                                                    locked_memory += st.st_size;
-                                                }
-
-                                                heat_the_cache(fd);
-
-                                            finish_file:
-                                                close(fd);
-                                                fputs("done\n", stderr);
-                                            }
-
-                                            
-                                            
-                                            
-        
+    char const * const list_name = argv[1];
+    FILE *list_fdp = fopen(list_name, "r");
+    char filename[1024];
     
-  /*  
+    while(fgets(filename,sizeof filename ,list_fdp)) //iterate through lines
+    {
+        filename[strcspn(filename, "\r\n")] = 0; // works for LF, CR, CRLF, LFCR, ...
+        int fd;
+        struct stat st;
+        void *ptr;
+
+        fprintf(stderr, "mlocking '%s'... ", filename);
+
+        retry_open:
+        fd = open(filename, O_RDONLY);
+        if( -1 == fd ) {
+            if( EINTR == errno ) {
+                goto retry_open;
+            } else {
+                //fprintf(stderr,"è luno: %n \n",sizeof(filename));
+                fprintf(stderr,
+                    "error while opening: %s %s\n",
+                    filename,
+                    strerror(errno) );
+
+                continue;
+            }
+        }
+
+        if( -1 == fstat(fd, &st) ) {
+            fprintf(stderr,
+                "error fstat(fd['%s']): %s\n",
+                filename,
+                strerror(errno) );
+            goto finish_file;
+        }
+
+        if( locked_memory + st.st_size > mlock_limit.rlim_cur ) {
+            //under systemd it seems to be able to lock the pages depsite this error message
+            //so comment the error.
+            /*fprintf(stderr,
+                "error: exceeded the memlock resource limit for this process.\n"
+                "Required limit to mlock '%s': %llu (counting already mlocked files)\n"
+                "Locked memory resource limit set to: %llu\n"
+                "Increase the locked memory resource limit and try again.\n",
+                filename,
+                (unsigned long long)locked_memory + st.st_size,
+                (unsigned long long)mlock_limit.rlim_cur );
+            close(fd);
+            break;*/
+        }
+
+        ptr = mmap(
+            NULL,
+            st.st_size,
+            PROT_READ,
+            MAP_SHARED | MAP_LOCKED,
+            fd,
+            0 );
+        if( MAP_FAILED == ptr ) {
+            fprintf(stderr,
+                "error mmap(fd['%s'], 0..%lld): %s\n",
+                filename,
+                (long long)st.st_size,
+                strerror(errno) );
+            goto finish_file;
+        }
+
+        if( -1 == mlock(ptr, st.st_size) ) {
+            fprintf(stderr,
+                "error mlock(ptr[fd['%s']]=%p): %s\n",
+                filename,
+                ptr,
+                strerror(errno) );
+            goto finish_file;
+        }
+
+        if( locked_memory + st.st_size < locked_memory ) {
+            /* overflow */
+            locked_memory = -1;
+        } else {
+            locked_memory += st.st_size;
+        }
+
+        heat_the_cache(fd);
+
+        finish_file:
+        close(fd);
+        fputs("done\n", stderr);
+    }
+
+
+
+    /*
     if( !locked_memory ) {
         fprintf(stderr,
             "nothing locked, exiting.\n");
         return 1;
     }
-*/
+    */
     fprintf(stderr,
         "Files locked and cache heated up. pid=%lld. Going to sleep, .zZ...\n",
         (long long)getpid() );

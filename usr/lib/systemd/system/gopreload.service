@@ -9,7 +9,7 @@ CPUSchedulingPolicy=batch
 
 ExecStart=/usr/share/gopreload/bin/StartPreload.sh
 
-     
+
 [Install]
 WantedBy=multi-user.target
 
